@@ -16,3 +16,7 @@ Aplicación web adaptable a móvil para iniciar sesión y administrar los regist
 2. Crea una cuenta desde la app (`index.html`) y confirma el correo si Supabase lo solicita.
 3. En SQL Editor, cambia el correo del `insert` al final de `schema.sql` y ejecútalo para otorgar `admin` a tu cuenta.
 4. Sirve esta carpeta con Live Server u otro servidor estático que soporte ES modules. No abras el archivo con `file://`.
+
+## Publicación
+
+La rama `feat/backend-crud-supabase` despliega la app con GitHub Pages desde `.github/workflows/deploy-backend-crud.yml`. Para que los registros nuevos confirmen el correo y regresen a la app, en Supabase → Authentication → URL Configuration define como **Site URL** `https://angelaparada2006-ship-it.github.io/unipaz-bd2-2026b/` y agrega esa misma URL a **Redirect URLs**. Añade también `http://127.0.0.1:5500/**` para pruebas locales.

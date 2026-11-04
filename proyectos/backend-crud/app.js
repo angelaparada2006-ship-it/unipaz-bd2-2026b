@@ -90,7 +90,7 @@ authForm.addEventListener("submit", async (event) => {
   event.preventDefault(); const button = $("#auth-submit"); button.disabled = true;
   try {
     const email = $("#auth-email").value.trim(), password = $("#auth-password").value;
-    const result = authMode === "signup" ? await supabase.auth.signUp({email,password}) : await supabase.auth.signInWithPassword({email,password});
+    const result = authMode === "signup" ? await supabase.auth.signUp({email,password,options:{emailRedirectTo:new URL("./",window.location.href).href}}) : await supabase.auth.signInWithPassword({email,password});
     if (result.error) throw result.error;
     if (authMode === "signup" && !result.data.session) { toast("Confirma tu correo y luego inicia sesión."); setAuthMode("signin"); }
     else if (result.data.user) await showSignedIn(result.data.user);
