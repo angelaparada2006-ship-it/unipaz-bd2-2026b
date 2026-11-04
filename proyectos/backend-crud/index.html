@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#f5f4ef" />
+    <title>Personas — Directorio</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="styles.css" />
+    <script type="module" src="app.js"></script>
+  </head>
+  <body>
+    <main class="shell">
+      <section id="auth-view" class="auth-layout">
+        <div class="auth-intro">
+          <div class="brand"><span class="brand-mark">P</span><span>personas</span></div>
+          <div class="intro-copy">
+            <span class="eyebrow">DIRECTORIO PERSONAL</span>
+            <h1>Tu información,<br /><em>en orden.</em></h1>
+            <p>Un espacio sencillo y seguro para administrar tus datos personales.</p>
+          </div>
+          <div class="intro-footer"><span class="status-dot"></span> Datos protegidos con Supabase</div>
+        </div>
+        <div class="auth-card-wrap">
+          <div class="auth-card">
+            <div class="auth-heading"><span class="eyebrow" id="auth-eyebrow">BIENVENIDO</span><h2 id="auth-title">Inicia sesión</h2><p id="auth-subtitle">Accede a tu directorio personal.</p></div>
+            <form id="auth-form" class="form-grid">
+              <label class="field full"><span>Correo electrónico</span><input id="auth-email" type="email" autocomplete="email" placeholder="tu@correo.com" required /></label>
+              <label class="field full"><span>Contraseña</span><input id="auth-password" type="password" autocomplete="current-password" minlength="8" placeholder="Mínimo 8 caracteres" required /></label>
+              <button class="button primary full" id="auth-submit" type="submit">Iniciar sesión <span aria-hidden="true">→</span></button>
+            </form>
+            <p class="auth-switch"><span id="auth-switch-copy">¿Primera vez aquí?</span> <button id="auth-switch" class="text-button" type="button">Crear cuenta</button></p>
+          </div>
+          <p class="auth-note">Al crear una cuenta, tu contraseña se administra de forma segura mediante Supabase Auth.</p>
+        </div>
+      </section>
+
+      <section id="app-view" class="app-view hidden">
+        <header class="topbar"><div class="brand"><span class="brand-mark">P</span><span>personas</span></div><div class="topbar-right"><span id="signed-in-email" class="signed-in-email"></span><button id="sign-out" class="button quiet" type="button">Cerrar sesión <span aria-hidden="true">↗</span></button></div></header>
+        <div class="page-heading"><div><span class="eyebrow">GESTIÓN DEL DIRECTORIO</span><h1>Personas</h1><p>Administra los registros del directorio.</p></div><button id="new-profile" class="button primary" type="button"><span aria-hidden="true">＋</span> Nueva persona</button></div>
+        <section id="profile-list-view" class="content-card">
+          <div class="card-head"><div><h2>Directorio</h2><p id="profile-count">Registros de personas</p></div><div class="search-wrap"><span aria-hidden="true">⌕</span><input id="search" type="search" placeholder="Buscar por nombre o documento" aria-label="Buscar personas" /></div></div>
+          <div id="profile-list" class="profile-list"></div>
+          <div id="empty-state" class="empty-state hidden"><div class="empty-icon">＋</div><h3>Aún no hay personas</h3><p>Agrega el primer registro al directorio.</p><button class="button secondary" id="empty-create" type="button">Registrar primera persona</button></div>
+        </section>
+        <section id="profile-form-view" class="content-card form-card hidden">
+          <div class="card-head form-card-head"><div><span class="eyebrow">INFORMACIÓN PERSONAL</span><h2 id="profile-form-title">Nuevo perfil</h2><p>Completa los datos que quieres guardar.</p></div><button id="cancel-edit" class="icon-button" type="button" aria-label="Cerrar formulario">×</button></div>
+          <form id="profile-form" class="profile-form">
+            <div class="photo-row"><div id="photo-preview" class="avatar large">＋</div><div><strong>Foto de perfil</strong><p>JPG o PNG · máximo 5 MB</p><label class="button secondary upload-button" for="photo-input">Elegir foto</label><input id="photo-input" class="visually-hidden" type="file" accept="image/png,image/jpeg,image/webp" /></div></div>
+            <div class="form-section"><h3>Identificación</h3><div class="form-grid two-col">
+              <label class="field"><span>Tipo de identificación <b>*</b></span><select id="identification-type" required><option value="">Selecciona el tipo</option><option value="CC">Cédula de ciudadanía (CC)</option><option value="TI">Tarjeta de identidad (TI)</option><option value="CE">Cédula de extranjería (CE)</option><option value="PA">Pasaporte (PA)</option><option value="PPT">Permiso por protección temporal (PPT)</option><option value="OTRO">Otro</option></select></label>
+              <label class="field"><span>Número de identificación <b>*</b></span><input id="identification-number" type="text" autocomplete="off" maxlength="30" placeholder="Número de documento" required /></label>
+            </div></div>
+            <div class="form-section"><h3>Datos personales</h3><div class="form-grid two-col">
+              <label class="field"><span>Primer nombre <b>*</b></span><input id="first-name" maxlength="80" autocomplete="given-name" required /></label>
+              <label class="field"><span>Segundo nombre</span><input id="middle-name" maxlength="80" autocomplete="additional-name" /></label>
+              <label class="field"><span>Primer apellido <b>*</b></span><input id="last-name" maxlength="80" autocomplete="family-name" required /></label>
+              <label class="field"><span>Segundo apellido</span><input id="second-last-name" maxlength="80" /></label>
+              <label class="field"><span>Correo electrónico <b>*</b></span><input id="profile-email" type="email" autocomplete="email" maxlength="254" required /></label>
+              <label class="field"><span>Teléfono</span><input id="phone" type="tel" autocomplete="tel" maxlength="30" placeholder="+57 300 000 0000" /></label>
+              <label class="field full"><span>Dirección</span><input id="address" autocomplete="street-address" maxlength="240" placeholder="Dirección de residencia" /></label>
+            </div></div>
+            <div id="form-error" class="form-error hidden" role="alert"></div>
+            <div class="form-actions"><button id="cancel-edit-bottom" class="button quiet" type="button">Cancelar</button><button id="save-profile" class="button primary" type="submit">Guardar perfil <span aria-hidden="true">→</span></button></div>
+          </form>
+        </section>
+        <div id="toast" class="toast hidden" role="status"></div>
+      </section>
+    </main>
+  </body>
+</html>

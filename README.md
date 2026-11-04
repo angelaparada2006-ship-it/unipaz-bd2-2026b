@@ -35,6 +35,10 @@ romperse.
 
 ## 🗂️ Cómo está organizado
 
+### Proyecto adicional — Backend CRUD
+
+La aplicación de directorio construida con Supabase vive en [`proyectos/backend-crud/`](proyectos/backend-crud/README.md). Incluye el frontend adaptable a móvil, SQL para `public.usuarios`, autenticación, fotos privadas y políticas RLS para administradores.
+
 ### La rama `main` — el material acumulado
 
 ```
