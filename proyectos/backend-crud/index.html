@@ -4,7 +4,8 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="theme-color" content="#f5f4ef" />
-    <title>Personas — Directorio</title>
+    <meta name="description" content="Directorio de personas: proyecto académico de Bases de Datos II en UNIPAZ, con CRUD web conectado a Supabase y PostgreSQL." />
+    <title>Directorio de personas — Bases de Datos II | UNIPAZ</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@500;600;700;800&display=swap" rel="stylesheet" />
@@ -17,10 +18,29 @@
         <div class="auth-intro">
           <div class="brand"><span class="brand-mark">P</span><span>personas</span></div>
           <div class="intro-copy">
-            <span class="eyebrow">DIRECTORIO PERSONAL</span>
+            <span class="eyebrow">UNIPAZ · BASES DE DATOS II</span>
             <h1>Tu información,<br /><em>en orden.</em></h1>
             <p>Un espacio sencillo y seguro para administrar tus datos personales.</p>
           </div>
+          <section class="project-panel" aria-labelledby="project-title">
+            <div class="project-panel-heading">
+              <span class="eyebrow">PROYECTO ACADÉMICO</span>
+              <span class="project-term">4.º semestre · Diurna</span>
+            </div>
+            <h2 id="project-title">Directorio de personas</h2>
+            <p><strong>Estudiante:</strong> Angela</p>
+            <p><strong>Docente:</strong> Hermes Acevedo</p>
+            <p><strong>Programa:</strong> Ingeniería Informática</p>
+            <div class="project-divider"></div>
+            <p class="project-description">CRUD de ID UUID, tipo y número de identificación, nombres, apellidos, correo, teléfono, dirección, username autogenerado y foto.</p>
+            <ul class="project-facts">
+              <li><strong>BaaS y API:</strong> Supabase conecta PostgreSQL con la interfaz web.</li>
+              <li><strong>Autenticación:</strong> Supabase Auth administra las contraseñas; no se guardan en la tabla de personas.</li>
+              <li><strong>Fotos:</strong> bucket privado de Supabase Storage; la tabla conserva la ruta.</li>
+              <li><strong>Seguridad:</strong> las operaciones del directorio requieren acceso autorizado.</li>
+              <li>Frontend web adaptable a celulares y computadores.</li>
+            </ul>
+          </section>
           <div class="intro-footer"><span class="status-dot"></span> Datos protegidos con Supabase</div>
         </div>
         <div class="auth-card-wrap">
@@ -39,6 +59,7 @@
 
       <section id="app-view" class="app-view hidden">
         <header class="topbar"><div class="brand"><span class="brand-mark">P</span><span>personas</span></div><div class="topbar-right"><span id="signed-in-email" class="signed-in-email"></span><button id="sign-out" class="button quiet" type="button">Cerrar sesión <span aria-hidden="true">↗</span></button></div></header>
+        <aside class="academic-credit"><span class="eyebrow">PROYECTO · BASES DE DATOS II</span><span>Angela · Ingeniería Informática · 4.º semestre · Jornada diurna · Docente: Hermes Acevedo</span></aside>
         <div class="page-heading"><div><span class="eyebrow">GESTIÓN DEL DIRECTORIO</span><h1>Personas</h1><p>Administra los registros del directorio.</p></div><button id="new-profile" class="button primary" type="button"><span aria-hidden="true">＋</span> Nueva persona</button></div>
         <section id="profile-list-view" class="content-card">
           <div class="card-head"><div><h2>Directorio</h2><p id="profile-count">Registros de personas</p></div><div class="search-wrap"><span aria-hidden="true">⌕</span><input id="search" type="search" placeholder="Buscar por nombre o documento" aria-label="Buscar personas" /></div></div>

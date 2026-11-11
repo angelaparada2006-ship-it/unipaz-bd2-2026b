@@ -2,6 +2,8 @@
 
 Aplicación web adaptable a móvil para iniciar sesión y administrar los registros de `public.usuarios`: crear, consultar, editar y eliminar. Usa el proyecto Supabase **Backend-CRUD** (`knlspzqaodqexqnqyojr`).
 
+La portada identifica el trabajo como proyecto académico de Angela para Bases de Datos II en UNIPAZ, con el docente Hermes Acevedo, Ingeniería Informática, cuarto semestre y jornada diurna. También resume el CRUD y la arquitectura usada: Supabase Auth, PostgreSQL/Data API y almacenamiento privado de fotos.
+
 ## Modelo y seguridad
 
 - La tabla existente `usuarios` contiene identificación, tipo, nombres, apellidos, correo, teléfono, dirección, usuario y foto.
