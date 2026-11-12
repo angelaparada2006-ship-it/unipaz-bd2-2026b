@@ -4,8 +4,8 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="theme-color" content="#f5f4ef" />
-    <meta name="description" content="Directorio de personas: proyecto académico de Bases de Datos II en UNIPAZ, con CRUD web conectado a Supabase y PostgreSQL." />
-    <title>Directorio de personas — Bases de Datos II | UNIPAZ</title>
+    <meta name="description" content="Demostración técnica de un sistema CRUD de personas con PostgreSQL, Supabase Auth, Data API y almacenamiento privado, desarrollada para Bases de Datos II en UNIPAZ." />
+    <title>CRUD de personas — Demo técnica | Bases de Datos II · UNIPAZ</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@500;600;700;800&display=swap" rel="stylesheet" />
@@ -14,20 +14,84 @@
   </head>
   <body>
     <main class="shell">
-      <section id="auth-view" class="auth-layout">
+      <section id="landing-view" class="landing-view" aria-labelledby="landing-title">
+        <header class="landing-topbar">
+          <div class="brand"><span class="brand-mark">C</span><span>CRUD · UNIPAZ</span></div>
+          <a class="landing-repo" href="https://github.com/angelaparada2006-ship-it/unipaz-bd2-2026b" target="_blank" rel="noopener noreferrer">Repositorio en GitHub <span aria-hidden="true">↗</span></a>
+        </header>
+        <section class="landing-hero">
+          <div class="landing-copy">
+            <span class="eyebrow">PROYECTO ACADÉMICO · BASES DE DATOS II</span>
+            <h1 id="landing-title">Un CRUD web sobre <em>PostgreSQL.</em></h1>
+            <p>Demostración técnica de creación, consulta, edición y eliminación de registros usando Supabase como Backend as a Service.</p>
+            <div class="landing-actions">
+              <button id="try-demo" class="button primary" type="button">Probar demo CRUD <span aria-hidden="true">→</span></button>
+              <button id="open-login" class="button secondary" type="button">Acceso administrador</button>
+            </div>
+            <p class="landing-access-note"><span class="status-dot"></span> La demo usa ejemplos ficticios temporales. La administración conectada a Supabase requiere una cuenta autorizada.</p>
+          </div>
+          <div class="architecture-card" aria-label="Flujo de arquitectura">
+            <span class="eyebrow">FLUJO DE LA APLICACIÓN</span>
+            <div class="architecture-step"><span class="architecture-number">01</span><div><strong>Frontend web</strong><span>Formulario y vistas CRUD</span></div></div>
+            <div class="architecture-connector" aria-hidden="true"></div>
+            <div class="architecture-step"><span class="architecture-number">02</span><div><strong>Supabase BaaS</strong><span>Auth · Data API · Storage</span></div></div>
+            <div class="architecture-connector" aria-hidden="true"></div>
+            <div class="architecture-step"><span class="architecture-number">03</span><div><strong>PostgreSQL</strong><span>Tabla usuarios · políticas RLS</span></div></div>
+          </div>
+        </section>
+        <section class="landing-details" aria-labelledby="deliverable-title">
+          <div class="landing-section-heading"><span class="eyebrow">CONTENIDO DE LA ENTREGA</span><h2 id="deliverable-title">Qué demuestra este proyecto</h2></div>
+          <div class="landing-grid">
+            <article class="landing-info-card"><span class="info-icon" aria-hidden="true">↻</span><h3>Operaciones CRUD</h3><p>Registro, lectura, actualización, eliminación y búsqueda de personas desde una interfaz adaptable.</p><ul><li>UUID como identificador interno.</li><li>Tipo y número de identificación, nombres y apellidos.</li><li>Correo único, teléfono, dirección y username generado.</li><li>Foto de perfil almacenada de forma privada.</li></ul></article>
+            <article class="landing-info-card"><span class="info-icon" aria-hidden="true">⌘</span><h3>Arquitectura y seguridad</h3><p>El cliente web consume la API de Supabase, que comunica la aplicación con PostgreSQL.</p><ul><li>Supabase Auth gestiona las cuentas y contraseñas.</li><li>PostgreSQL persiste los registros.</li><li>Storage privado guarda las fotos.</li><li>RLS y el rol admin restringen las operaciones.</li></ul></article>
+            <article class="landing-info-card course-card"><span class="eyebrow">PRESENTACIÓN ACADÉMICA</span><h3>UNIPAZ · Ingeniería Informática</h3><dl><div><dt>Estudiante</dt><dd>Angela</dd></div><div><dt>Docente</dt><dd>Hermes Acevedo</dd></div><div><dt>Semestre</dt><dd>4.º · Jornada diurna</dd></div><div><dt>Asignatura</dt><dd>Bases de Datos II</dd></div></dl></article>
+          </div>
+        </section>
+        <footer class="landing-footer"><span>Proyecto académico no comercial · UNIPAZ</span><a href="https://github.com/angelaparada2006-ship-it/unipaz-bd2-2026b" target="_blank" rel="noopener noreferrer">Código y documentación en GitHub ↗</a></footer>
+      </section>
+
+      <section id="demo-view" class="app-view hidden">
+        <header class="topbar"><div class="brand"><span class="brand-mark">D</span><span>Demo CRUD · UNIPAZ</span></div><div class="topbar-right"><button id="demo-to-landing" class="button quiet" type="button">Presentación</button><button id="demo-to-auth" class="button quiet" type="button">Acceso administrador ↗</button></div></header>
+        <aside class="demo-notice"><strong>Modo demostración:</strong> estos ejemplos son ficticios, viven solo en esta sesión del navegador y no se envían a Supabase. No escribas datos personales reales.</aside>
+        <aside class="academic-credit"><span class="eyebrow">PROYECTO · BASES DE DATOS II</span><span>Angela · Ingeniería Informática · 4.º semestre · Jornada diurna · Docente: Hermes Acevedo</span></aside>
+        <div class="page-heading"><div><span class="eyebrow">PRUEBA LAS CUATRO OPERACIONES</span><h1>Demo CRUD pública</h1><p>Agrega, consulta, edita y elimina registros de ejemplo.</p></div><button id="demo-new" class="button primary" type="button"><span aria-hidden="true">＋</span> Nueva persona</button></div>
+        <section id="demo-list-view" class="content-card">
+          <div class="card-head"><div><h2>Personas de ejemplo</h2><p id="demo-count">Registros ficticios</p></div><div class="search-wrap"><span aria-hidden="true">⌕</span><input id="demo-search" type="search" placeholder="Buscar por nombre o documento" aria-label="Buscar ejemplos" /></div></div>
+          <div id="demo-list" class="profile-list"></div>
+          <div id="demo-empty" class="empty-state hidden"><div class="empty-icon">＋</div><h3>Demo vacía</h3><p>Crea otro ejemplo con el botón Nueva persona.</p></div>
+        </section>
+        <section id="demo-form-view" class="content-card form-card hidden">
+          <div class="card-head form-card-head"><div><span class="eyebrow">DATOS FICTICIOS EN MEMORIA</span><h2 id="demo-form-title">Nueva persona de ejemplo</h2><p>El UUID y el username se generan al guardar.</p></div><button id="demo-cancel-top" class="icon-button" type="button" aria-label="Cerrar formulario">×</button></div>
+          <form id="demo-form" class="profile-form">
+            <div class="form-section"><h3>Identificación y datos personales</h3><div class="form-grid two-col">
+              <label class="field"><span>Tipo de identificación <b>*</b></span><select id="demo-identification-type" required><option value="">Selecciona el tipo</option><option value="CC">Cédula de ciudadanía (CC)</option><option value="TI">Tarjeta de identidad (TI)</option><option value="CE">Cédula de extranjería (CE)</option><option value="PA">Pasaporte (PA)</option></select></label>
+              <label class="field"><span>Número ficticio <b>*</b></span><input id="demo-identification" maxlength="30" placeholder="DEMO-003" required /></label>
+              <label class="field"><span>Nombres <b>*</b></span><input id="demo-names" maxlength="120" required /></label>
+              <label class="field"><span>Apellidos <b>*</b></span><input id="demo-surnames" maxlength="120" required /></label>
+              <label class="field"><span>Correo de ejemplo <b>*</b></span><input id="demo-email" type="email" maxlength="254" placeholder="persona@example.com" required /></label>
+              <label class="field"><span>Teléfono ficticio</span><input id="demo-phone" maxlength="30" placeholder="+57 300 000 0000" /></label>
+              <label class="field full"><span>Dirección de ejemplo</span><input id="demo-address" maxlength="240" placeholder="Dirección ficticia" /></label>
+            </div></div>
+            <div class="form-actions"><button id="demo-cancel" class="button quiet" type="button">Cancelar</button><button class="button primary" type="submit">Guardar ejemplo <span aria-hidden="true">→</span></button></div>
+          </form>
+        </section>
+        <div id="demo-toast" class="toast hidden" role="status"></div>
+      </section>
+
+      <section id="auth-view" class="auth-layout hidden">
         <div class="auth-intro">
-          <div class="brand"><span class="brand-mark">P</span><span>personas</span></div>
+          <div class="brand"><span class="brand-mark">C</span><span>CRUD · UNIPAZ</span></div>
           <div class="intro-copy">
-            <span class="eyebrow">UNIPAZ · BASES DE DATOS II</span>
-            <h1>Tu información,<br /><em>en orden.</em></h1>
-            <p>Un espacio sencillo y seguro para administrar tus datos personales.</p>
+            <span class="eyebrow">ACCESO AL MÓDULO CRUD</span>
+            <h1>Gestión de registros<br /><em>con Supabase.</em></h1>
+            <p>Ingresa para probar las operaciones sobre PostgreSQL. El acceso está limitado a cuentas autorizadas.</p>
           </div>
           <section class="project-panel" aria-labelledby="project-title">
             <div class="project-panel-heading">
               <span class="eyebrow">PROYECTO ACADÉMICO</span>
               <span class="project-term">4.º semestre · Diurna</span>
             </div>
-            <h2 id="project-title">Directorio de personas</h2>
+            <h2 id="project-title">CRUD de personas</h2>
             <p><strong>Estudiante:</strong> Angela</p>
             <p><strong>Docente:</strong> Hermes Acevedo</p>
             <p><strong>Programa:</strong> Ingeniería Informática</p>
@@ -37,15 +101,16 @@
               <li><strong>BaaS y API:</strong> Supabase conecta PostgreSQL con la interfaz web.</li>
               <li><strong>Autenticación:</strong> Supabase Auth administra las contraseñas; no se guardan en la tabla de personas.</li>
               <li><strong>Fotos:</strong> bucket privado de Supabase Storage; la tabla conserva la ruta.</li>
-              <li><strong>Seguridad:</strong> las operaciones del directorio requieren acceso autorizado.</li>
+              <li><strong>Seguridad:</strong> las operaciones sobre registros reales requieren acceso autorizado.</li>
               <li>Frontend web adaptable a celulares y computadores.</li>
             </ul>
           </section>
           <div class="intro-footer"><span class="status-dot"></span> Datos protegidos con Supabase</div>
         </div>
         <div class="auth-card-wrap">
+          <button id="back-to-project" class="button quiet back-to-project" type="button">← Volver a la presentación</button>
           <div class="auth-card">
-            <div class="auth-heading"><span class="eyebrow" id="auth-eyebrow">BIENVENIDO</span><h2 id="auth-title">Inicia sesión</h2><p id="auth-subtitle">Accede a tu directorio personal.</p></div>
+            <div class="auth-heading"><span class="eyebrow" id="auth-eyebrow">BIENVENIDO</span><h2 id="auth-title">Inicia sesión</h2><p id="auth-subtitle">Accede al sistema de demostración CRUD.</p></div>
             <form id="auth-form" class="form-grid">
               <label class="field full"><span>Correo electrónico</span><input id="auth-email" type="email" autocomplete="email" placeholder="tu@correo.com" required /></label>
               <label class="field full"><span>Contraseña</span><input id="auth-password" type="password" autocomplete="current-password" minlength="8" placeholder="Mínimo 8 caracteres" required /></label>
@@ -58,9 +123,9 @@
       </section>
 
       <section id="app-view" class="app-view hidden">
-        <header class="topbar"><div class="brand"><span class="brand-mark">P</span><span>personas</span></div><div class="topbar-right"><span id="signed-in-email" class="signed-in-email"></span><button id="sign-out" class="button quiet" type="button">Cerrar sesión <span aria-hidden="true">↗</span></button></div></header>
+        <header class="topbar"><div class="brand"><span class="brand-mark">C</span><span>CRUD · UNIPAZ</span></div><div class="topbar-right"><span id="signed-in-email" class="signed-in-email"></span><button id="sign-out" class="button quiet" type="button">Cerrar sesión <span aria-hidden="true">↗</span></button></div></header>
         <aside class="academic-credit"><span class="eyebrow">PROYECTO · BASES DE DATOS II</span><span>Angela · Ingeniería Informática · 4.º semestre · Jornada diurna · Docente: Hermes Acevedo</span></aside>
-        <div class="page-heading"><div><span class="eyebrow">GESTIÓN DEL DIRECTORIO</span><h1>Personas</h1><p>Administra los registros del directorio.</p></div><button id="new-profile" class="button primary" type="button"><span aria-hidden="true">＋</span> Nueva persona</button></div>
+        <div class="page-heading"><div><span class="eyebrow">DEMOSTRACIÓN CRUD · POSTGRESQL / SUPABASE</span><h1>Registros de personas</h1><p>Prueba las operaciones de consulta, creación, edición y eliminación.</p></div><button id="new-profile" class="button primary" type="button"><span aria-hidden="true">＋</span> Nueva persona</button></div>
         <section id="profile-list-view" class="content-card">
           <div class="card-head"><div><h2>Directorio</h2><p id="profile-count">Registros de personas</p></div><div class="search-wrap"><span aria-hidden="true">⌕</span><input id="search" type="search" placeholder="Buscar por nombre o documento" aria-label="Buscar personas" /></div></div>
           <div id="profile-list" class="profile-list"></div>

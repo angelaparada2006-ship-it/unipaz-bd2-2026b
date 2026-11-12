@@ -2,10 +2,14 @@ import { createClient } from "https://esm.sh/@supabase/supabase-js@2.119.0";
 import { SUPABASE_URL, SUPABASE_ANON_KEY } from "./supabase-config.js";
 
 const $ = (selector) => document.querySelector(selector);
-const authView = $("#auth-view"), appView = $("#app-view");
+const landingView = $("#landing-view"), demoView = $("#demo-view"), authView = $("#auth-view"), appView = $("#app-view");
 const authForm = $("#auth-form"), profileForm = $("#profile-form");
 const configReady = SUPABASE_URL.startsWith("https://") && !SUPABASE_URL.includes("TU-PROJECT") && SUPABASE_ANON_KEY.length > 20 && !SUPABASE_ANON_KEY.includes("TU-PUBLISHABLE");
-let supabase, currentUser, usuarios = [], editingId = null, selectedPhoto = null, authMode = "signin", toastTimer;
+let supabase, currentUser, usuarios = [], editingId = null, selectedPhoto = null, authMode = "signin", toastTimer, demoToastTimer, demoEditingId = null;
+let demoPeople = [
+  {id:"11111111-1111-4111-8111-111111111111",identificacion:"DEMO-001",tipo_identificacion:"CC",nombres_1_y_2:"Ana María",apellidos_1_y_2:"Ejemplo Cortés",correo_electronico:"ana@example.com",telefono:"+57 300 000 0001",direccion:"Dirección ficticia 1",username:"cortes.ana.demo"},
+  {id:"22222222-2222-4222-8222-222222222222",identificacion:"DEMO-002",tipo_identificacion:"TI",nombres_1_y_2:"Alex",apellidos_1_y_2:"Persona Demostración",correo_electronico:"alex@example.com",telefono:"+57 300 000 0002",direccion:"Dirección ficticia 2",username:"demostracion.alex.demo"}
+];
 
 function toast(message) { const el = $("#toast"); el.textContent = message; el.classList.remove("hidden"); clearTimeout(toastTimer); toastTimer = setTimeout(() => el.classList.add("hidden"), 3200); }
 function showError(message) { const el = $("#form-error"); el.textContent = message; el.classList.remove("hidden"); }
@@ -20,7 +24,7 @@ function setAuthMode(mode) {
   const signup = mode === "signup";
   $("#auth-eyebrow").textContent = signup ? "CREA TU CUENTA" : "BIENVENIDO";
   $("#auth-title").textContent = signup ? "Crea tu acceso" : "Inicia sesión";
-  $("#auth-subtitle").textContent = signup ? "Usa tu correo y una contraseña segura." : "Accede al directorio de personas.";
+  $("#auth-subtitle").textContent = signup ? "Usa tu correo y una contraseña segura." : "Accede al sistema de demostración CRUD.";
   $("#auth-submit").innerHTML = signup ? "Crear cuenta <span aria-hidden=\"true\">→</span>" : "Iniciar sesión <span aria-hidden=\"true\">→</span>";
   $("#auth-switch-copy").textContent = signup ? "¿Ya tienes cuenta?" : "¿Primera vez aquí?";
   $("#auth-switch").textContent = signup ? "Iniciar sesión" : "Crear cuenta";
@@ -30,6 +34,7 @@ async function showSignedIn(user) {
   currentUser = user;
   const { data, error } = await supabase.from("app_roles").select("role").eq("user_id", user.id).eq("role", "admin").maybeSingle();
   if (error) { toast(errorText(error)); return; }
+  landingView.classList.add("hidden"); demoView.classList.add("hidden");
   if (!data) {
     authView.classList.remove("hidden"); appView.classList.add("hidden");
     $("#auth-title").textContent = "Acceso pendiente";
@@ -85,6 +90,31 @@ function makeUsername() {
   return `${base || "usuario"}.${crypto.randomUUID().slice(0,6)}`;
 }
 
+function demoToast(message) { const el = $("#demo-toast"); el.textContent = message; el.classList.remove("hidden"); clearTimeout(demoToastTimer); demoToastTimer = setTimeout(() => el.classList.add("hidden"), 2600); }
+function renderDemo() {
+  const query = $("#demo-search").value.trim().toLocaleLowerCase("es");
+  const filtered = demoPeople.filter((person) => [fullName(person),person.identificacion,person.correo_electronico,person.username].join(" ").toLocaleLowerCase("es").includes(query));
+  $("#demo-count").textContent = `${demoPeople.length} ${demoPeople.length === 1 ? "registro ficticio" : "registros ficticios"}`;
+  $("#demo-empty").classList.toggle("hidden", filtered.length > 0);
+  $("#demo-list").classList.toggle("hidden", filtered.length === 0);
+  $("#demo-list").innerHTML = filtered.map((person) => `<article class="profile-item" data-demo-id="${escapeHtml(person.id)}"><div class="avatar">${escapeHtml(initials(person))}</div><div><p class="person-name">${escapeHtml(fullName(person))}</p><p class="person-meta">@${escapeHtml(person.username)}</p></div><div class="profile-email">${escapeHtml(person.correo_electronico)}</div><p class="profile-document">${escapeHtml(person.tipo_identificacion)} · ${escapeHtml(person.identificacion)}</p><div class="item-actions"><button class="small-action" data-demo-action="edit" type="button">Editar</button><button class="small-action" data-demo-action="delete" type="button">Eliminar</button></div></article>`).join("");
+}
+function openDemoForm(person = null) {
+  demoEditingId = person?.id || null; $("#demo-form").reset();
+  $("#demo-form-title").textContent = demoEditingId ? "Editar persona de ejemplo" : "Nueva persona de ejemplo";
+  for (const [id,value] of Object.entries({"demo-identification-type":person?.tipo_identificacion,"demo-identification":person?.identificacion,"demo-names":person?.nombres_1_y_2,"demo-surnames":person?.apellidos_1_y_2,"demo-email":person?.correo_electronico,"demo-phone":person?.telefono,"demo-address":person?.direccion})) $(`#${id}`).value = value || "";
+  $("#demo-list-view").classList.add("hidden"); $("#demo-form-view").classList.remove("hidden"); window.scrollTo({top:0,behavior:"smooth"});
+}
+function closeDemoForm() { $("#demo-form-view").classList.add("hidden"); $("#demo-list-view").classList.remove("hidden"); $("#demo-form").reset(); demoEditingId = null; }
+function openAuth() {
+  landingView.classList.add("hidden"); demoView.classList.add("hidden"); appView.classList.add("hidden"); authView.classList.remove("hidden");
+  if (configReady) { authForm.classList.remove("hidden"); $(".auth-switch").classList.remove("hidden"); $("#access-signout")?.remove(); authForm.reset(); setAuthMode("signin"); }
+}
+function showLanding() {
+  demoView.classList.add("hidden"); authView.classList.add("hidden"); appView.classList.add("hidden"); landingView.classList.remove("hidden");
+  if (configReady) { authForm.classList.remove("hidden"); $(".auth-switch").classList.remove("hidden"); $("#access-signout")?.remove(); authForm.reset(); setAuthMode("signin"); }
+}
+
 $("#auth-switch").addEventListener("click", () => setAuthMode(authMode === "signin" ? "signup" : "signin"));
 authForm.addEventListener("submit", async (event) => {
   event.preventDefault(); const button = $("#auth-submit"); button.disabled = true;
@@ -96,7 +126,31 @@ authForm.addEventListener("submit", async (event) => {
     else if (result.data.user) await showSignedIn(result.data.user);
   } catch (error) { toast(errorText(error)); } finally { button.disabled = false; }
 });
-$("#sign-out").addEventListener("click", async () => { await supabase.auth.signOut(); usuarios = []; appView.classList.add("hidden"); authView.classList.remove("hidden"); authForm.reset(); setAuthMode("signin"); });
+$("#open-login").addEventListener("click", openAuth);
+authView.addEventListener("click", (event) => { if (event.target.closest("#back-to-project")) showLanding(); });
+$("#try-demo").addEventListener("click", () => { landingView.classList.add("hidden"); authView.classList.add("hidden"); demoView.classList.remove("hidden"); closeDemoForm(); renderDemo(); });
+$("#demo-to-landing").addEventListener("click", showLanding);
+$("#demo-to-auth").addEventListener("click", openAuth);
+$("#demo-new").addEventListener("click", () => openDemoForm());
+$("#demo-cancel").addEventListener("click", closeDemoForm);
+$("#demo-cancel-top").addEventListener("click", closeDemoForm);
+$("#demo-search").addEventListener("input", renderDemo);
+$("#demo-list").addEventListener("click", (event) => {
+  const button = event.target.closest("button[data-demo-action]"); if (!button) return;
+  const person = demoPeople.find((item) => item.id === button.closest("[data-demo-id]").dataset.demoId); if (!person) return;
+  if (button.dataset.demoAction === "edit") openDemoForm(person);
+  if (button.dataset.demoAction === "delete" && window.confirm(`¿Eliminar el ejemplo de ${fullName(person)}?`)) { demoPeople = demoPeople.filter((item) => item.id !== person.id); renderDemo(); demoToast("Ejemplo eliminado de esta sesión."); }
+});
+$("#demo-form").addEventListener("submit", (event) => {
+  event.preventDefault();
+  const previous = demoPeople.find((person) => person.id === demoEditingId);
+  const names = $("#demo-names").value.trim(), surnames = $("#demo-surnames").value.trim();
+  const usernameBase = [surnames.split(/\s+/)[0],names.split(/\s+/)[0]].join(".").normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLowerCase().replace(/[^a-z0-9.]/g,"");
+  const person = {id:previous?.id || crypto.randomUUID(),identificacion:$("#demo-identification").value.trim(),tipo_identificacion:$("#demo-identification-type").value,nombres_1_y_2:names,apellidos_1_y_2:surnames,correo_electronico:$("#demo-email").value.trim().toLowerCase(),telefono:$("#demo-phone").value.trim()||null,direccion:$("#demo-address").value.trim()||null,username:previous?.username || `${usernameBase || "persona"}.${crypto.randomUUID().slice(0,6)}`};
+  demoPeople = previous ? demoPeople.map((item) => item.id === previous.id ? person : item) : [...demoPeople,person];
+  closeDemoForm(); renderDemo(); demoToast(previous ? "Ejemplo actualizado en esta sesión." : "Ejemplo agregado en esta sesión.");
+});
+$("#sign-out").addEventListener("click", async () => { await supabase.auth.signOut(); usuarios = []; authForm.reset(); setAuthMode("signin"); });
 $("#new-profile").addEventListener("click", () => openProfileForm());
 $("#empty-create").addEventListener("click", () => openProfileForm());
 $("#cancel-edit").addEventListener("click", closeProfileForm);
@@ -137,8 +191,8 @@ profileForm.addEventListener("submit", async (event) => {
 });
 
 if (!configReady) {
-  authView.innerHTML = `<div class="auth-intro"><div class="brand"><span class="brand-mark">P</span><span>personas</span></div><div class="intro-copy"><span class="eyebrow">CONFIGURACIÓN PENDIENTE</span><h1>Conecta tu<br /><em>proyecto.</em></h1><p>La interfaz y el esquema están listos. Agrega la publishable key de Supabase para iniciar.</p></div><div class="intro-footer">Revisa el archivo README.md</div></div><div class="auth-card-wrap"><div class="auth-card"><div class="auth-heading"><span class="eyebrow">PASO FINAL</span><h2>Configura Supabase</h2><p>Completa la clave en <code>supabase-config.js</code> y aplica <code>schema.sql</code> en SQL Editor.</p></div></div></div>`;
+  authView.innerHTML = `<div class="auth-intro"><div class="brand"><span class="brand-mark">C</span><span>CRUD · UNIPAZ</span></div><div class="intro-copy"><span class="eyebrow">CONFIGURACIÓN PENDIENTE</span><h1>Conecta tu<br /><em>proyecto.</em></h1><p>La demo pública está disponible. Para usar la administración, configura la conexión con Supabase.</p></div><div class="intro-footer">Revisa el archivo README.md</div></div><div class="auth-card-wrap"><button id="back-to-project" class="button quiet back-to-project" type="button">← Volver a la presentación</button><div class="auth-card"><div class="auth-heading"><span class="eyebrow">PASO FINAL</span><h2>Configura Supabase</h2><p>Completa la clave en <code>supabase-config.js</code> y aplica <code>schema.sql</code> en SQL Editor.</p></div></div></div>`;
 } else {
   supabase = createClient(SUPABASE_URL,SUPABASE_ANON_KEY);
-  supabase.auth.onAuthStateChange((_event,session) => { if (session?.user) queueMicrotask(() => showSignedIn(session.user)); else { appView.classList.add("hidden"); authView.classList.remove("hidden"); authForm.classList.remove("hidden"); $(".auth-switch").classList.remove("hidden"); $("#access-signout")?.remove(); setAuthMode("signin"); } });
+  supabase.auth.onAuthStateChange((_event,session) => { if (session?.user) queueMicrotask(() => showSignedIn(session.user)); else { appView.classList.add("hidden"); demoView.classList.add("hidden"); authView.classList.add("hidden"); landingView.classList.remove("hidden"); authForm.classList.remove("hidden"); $(".auth-switch").classList.remove("hidden"); $("#access-signout")?.remove(); setAuthMode("signin"); } });
 }
